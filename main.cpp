@@ -6,6 +6,6 @@
 using namespace std;
 
 int main(int argc, char *argv[]){
-    Analizador(argv[3]);
+    Analizador("prueba.script");
     return 0;
 }
