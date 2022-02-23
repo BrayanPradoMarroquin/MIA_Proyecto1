@@ -55,29 +55,31 @@ void Analizador(string entrada){
                 
         }
         
+        stringstream nueva2(linea);
+        string line2;
         //Tercera pasada, ejecutar comandos
-        while (getline(nueva, line, ' '))
+        while (getline(nueva2, line2, ' '))
         {
-            if (line=="mkdisk")
+            if (line2=="mkdisk")
             {
                 EjecutarMk();
                 break;
-            }else if (line=="rep")
+            }else if (line2=="rep")
             {
                 cout<<"Reporte Generado Exitosamente :D "<<endl;
-            }else if (line=="rmdisk")
+            }else if (line2=="rmdisk")
             {
                 cout<<"Disco Removido"<<endl;
-            }else if (line=="fdisk")
+            }else if (line2=="fdisk")
             {
                 cout<<"Busqueda de Disco"<<endl;
-            }else if (line=="mount")
+            }else if (line2=="mount")
             {
                 cout<<"Disco Montado"<<endl;
-            }else if (line=="unmount")
+            }else if (line2=="unmount")
             {
                 cout<<"Disco desmontado"<<endl;
-            }else if (line=="mkfs")
+            }else if (line2=="mkfs")
             {
                 cout<<"Formateo de Disco"<<endl;
             }
