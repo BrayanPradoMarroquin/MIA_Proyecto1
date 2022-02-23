@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "mk.h"
 
 using namespace std;
 
@@ -16,16 +17,18 @@ void Analizador(string entrada){
 
     while (getline(Archivo, linea))
     {
+        int Estado = 0; 
         stringstream nueva(linea);
         string line;
         while (getline(nueva, line, ' '))
         {
             if (line=="mkdisk")
             {
-                
+                Estado = 1;
                 cout<<"Nuevo Disco"<<endl;
             }else if (line=="rep")
             {
+                Estado=2;
                 cout<<"Reporte Generado"<<endl;
             }else if (line=="rmdisk")
             {
@@ -42,7 +45,12 @@ void Analizador(string entrada){
             }else if (line=="mkfs")
             {
                 cout<<"Formateo de Disco"<<endl;
-            }    
+            }else if (Estado==1)
+            {
+                Analizadormk(line);
+                //cout<<line<<endl;
+            }
+                
         }
     }
     
