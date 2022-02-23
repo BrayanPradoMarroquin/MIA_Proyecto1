@@ -6,7 +6,7 @@
 
 using namespace std;
 
-//Analizador 
+//Analizador General
 void Analizador(string &i);
 
 
@@ -14,12 +14,14 @@ void Analizador(string entrada){
     ifstream Archivo(entrada);
 
     string linea;
-
+//Primera pasada detectar comando
     while (getline(Archivo, linea))
     {
         int Estado = 0; 
         stringstream nueva(linea);
         string line;
+
+        //Segunda pasada para leer comandos y guardar informacion
         while (getline(nueva, line, ' '))
         {
             if (line=="mkdisk")
@@ -52,6 +54,35 @@ void Analizador(string entrada){
             }
                 
         }
+        
+        //Tercera pasada, ejecutar comandos
+        while (getline(nueva, line, ' '))
+        {
+            if (line=="mkdisk")
+            {
+                EjecutarMk();
+                break;
+            }else if (line=="rep")
+            {
+                cout<<"Reporte Generado Exitosamente :D "<<endl;
+            }else if (line=="rmdisk")
+            {
+                cout<<"Disco Removido"<<endl;
+            }else if (line=="fdisk")
+            {
+                cout<<"Busqueda de Disco"<<endl;
+            }else if (line=="mount")
+            {
+                cout<<"Disco Montado"<<endl;
+            }else if (line=="unmount")
+            {
+                cout<<"Disco desmontado"<<endl;
+            }else if (line=="mkfs")
+            {
+                cout<<"Formateo de Disco"<<endl;
+            }
+        }
+           
     }
     
 }

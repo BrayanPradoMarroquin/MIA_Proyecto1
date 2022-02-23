@@ -1,2 +1,2 @@
-mkdisk -Size=3000 -unit=K -path=/home/user/Disco1.dk
+mkdisk -path=/home/user/Disco1.dk  -unit=K -Size=3000
 rep

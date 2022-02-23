@@ -51,6 +51,8 @@ void Analizadormk(string dato){
             cout<<MBR.path<<endl;
         }
     }
-    
+}
 
+void EjecutarMk(){
+    cout<<"Disco Duro creado exitosamente"<<endl;
 }
