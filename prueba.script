@@ -1,2 +1,3 @@
-mkdisk -path=/home/user/Disco1.dk  -unit=K -Size=3000
+mkdisk -path=Disco1.dk -unit=K -Size=30
+fdisk -path=Disco1.dk -unit=K -Size=3 -name="primera"
 rep
