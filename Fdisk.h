@@ -9,29 +9,25 @@
 
 using namespace std;
 
-struct Fdisk
-{
-    int size;
-    string unit;
-    char name[25];
+void escribirfd();
+
+struct Partition {
+  int size = 0; 
+  char name[25]; 
 };
 
-struct MkFdisk
+struct PMBR
 {
-    int mbr_tamano;
-    char mbr_fecha_creacion[17];
-    int mbr_dsk_signature;
-    int size;
-    string fit = "BF";
-    int unit = 1024*1024;
-    string path;
+  int mbr_tamano;
+  char mbr_fecha_creacion[17];
+  int mbr_dsk_signature;
+  Partition partitions[4];
 };
-
 
 int size=0;
 int unit=0;
 string path;
-char name[25];
+string name;
 
 void AnalizadorFdisk(string dato){
     stringstream nueva(dato);
@@ -72,11 +68,41 @@ void AnalizadorFdisk(string dato){
         }else if (Estado==4)
         {
             //strcpy(name, linea.c_str());
-            strcpy(name, linea.c_str());
+            name = linea;
         }   
     }
 }
 
+void escribirfd(){
+    PMBR mbr;
+
+    FILE *disk_file = fopen(path.c_str(), "r+");
+    fseek(disk_file, 0, SEEK_SET);
+    fread(&mbr, sizeof(PMBR), 1, disk_file);
+
+    // BUSCAR PARTICION LIBRE
+  int partitionIndex = 0;
+  for(int i =0; i < 4; i++) {
+    if(mbr.partitions[i].size == 0){
+      partitionIndex = i;
+      break;
+    }
+  }
+
+    Partition nuevaPart;
+  nuevaPart.size = unit*size;
+  strcpy(nuevaPart.name, name.c_str());
+
+  mbr.partitions[partitionIndex] = nuevaPart;
+
+  // GUARDAR
+  fseek(disk_file, 0, SEEK_SET);
+  fwrite(&mbr, sizeof(PMBR), 1, disk_file);
+
+  fclose(disk_file);
+}
+
 void EjecutarFdisk(){
+    escribirfd();
     cout<<"Particion creada"<<endl;
 }

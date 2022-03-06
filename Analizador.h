@@ -57,6 +57,7 @@ void Analizador(string entrada){
             }else if (Estado==3)
             {
                 AnalizadorFdisk(line);
+                //cout<<"Hola"<<endl;
             }
             
 

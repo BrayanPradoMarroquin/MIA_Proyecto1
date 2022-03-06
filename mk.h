@@ -10,6 +10,20 @@ using namespace std;
 
 void escribir();
 
+struct Partitionn {
+  int size = 0;
+  char unit; 
+  char name[25]; 
+};
+
+struct mk
+{
+    int mbr_tamano;
+    char mbr_fecha_creacion[17];
+    int mbr_dsk_signature;
+    Partitionn partitions[4];
+};
+
 struct mkdisk
 {
     int mbr_tamano;
@@ -22,6 +36,7 @@ struct mkdisk
 };
 
 mkdisk MBR;
+mk MBRT;
 
 /**
  * Formato de fecha
@@ -93,9 +108,9 @@ void escribir(){
     int mbr_dsk_signature = rand() % 10; // NUMERO RANDOM
 
   // PARA ESCRIBIR STRINGS SE USA strcpy (SE DEBE ESCRIBIR EN EL ORDEN EN EL QUE SE DEFINIÓ EL STRUCT)
-  MBR.size = mbr_tamano;
-  strcpy(MBR.mbr_fecha_creacion, mbr_fecha_creacion.c_str());
-  MBR.mbr_dsk_signature = mbr_dsk_signature;
+  MBRT.mbr_tamano = mbr_tamano;
+  strcpy(MBRT.mbr_fecha_creacion, mbr_fecha_creacion.c_str());
+  MBRT.mbr_dsk_signature = mbr_dsk_signature;
 
   // AQUÍ ABRIMOS COMO LECTURA Y ESCRITURA (rb+) EL ARCHIVO BINARIO
   FILE *disk_file = fopen(MBR.path.c_str(), "rb+");
@@ -116,7 +131,7 @@ void escribir(){
   fseek(disk_file, 0, SEEK_SET);
 
   // CON FWRITE GUARDAMOS EL STRUCT LUEGO DE POSICIONARNOS
-  fwrite(&MBR, sizeof(MBR), 1, disk_file); // EL TERCER PAREMETRO ES LA CANTIDAD DE STRUCTS A GUARDAR (EN ESTE CASO SOLO 1)
+  fwrite(&MBRT, sizeof(MBRT), 1, disk_file); // EL TERCER PAREMETRO ES LA CANTIDAD DE STRUCTS A GUARDAR (EN ESTE CASO SOLO 1)
 
   // CERRAR STREAM (importante)
   fclose(disk_file);
@@ -126,4 +141,3 @@ void EjecutarMk(){
     escribir();
     cout<<"Disco Duro creado exitosamente"<<endl;
 }
-
