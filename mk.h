@@ -180,8 +180,53 @@ void escribir(){
         // CON FWRITE GUARDAMOS EL STRUCT LUEGO DE POSICIONARNOS
         fwrite(&MBRT, sizeof(MBRT), 1, disk_file); // EL TERCER PAREMETRO ES LA CANTIDAD DE STRUCTS A GUARDAR (EN ESTE CASO SOLO 1)
 
+        fseek(disk_file, sizeof(MBRT) + 1, SEEK_SET);
+        fwrite(&nuevo, sizeof(EBR), 1, disk_file);
+
         // CERRAR STREAM (importante)
         fclose(disk_file);
+    }
+}
+
+void Analizadorrmdisk(string dato){
+    stringstream nueva(dato);
+    string linea;
+    int Estado = 0;
+    while (getline(nueva, linea, '='))
+    {
+        if (linea=="-path")
+        {
+            Estado=1;
+        }else if (Estado==1)
+        {
+            MBR.path = linea;
+        }
+        
+        
+    }
+    
+}
+
+void rmdisk(){
+    cout<<"Hola Mundo"<<endl;
+    if (MBR.path.length() > 0) {
+        FILE *disk_file = fopen(MBR.path.c_str(), "rb");
+        string respuesta;
+        // EXISTE
+        if (disk_file != NULL) {
+            cout<<"Esta seguro que desea eliminar el disco Y o N ..."<<endl;
+            cin>>respuesta;
+            if (respuesta=="Y")
+            {
+                int removed = remove(MBR.path.c_str());
+                if (removed != 0){
+                    cout<<"DISK_ERR No fue posible eliminar el disco."<<endl;
+                }
+            }
+        }
+        fclose(disk_file);
+    }else{
+        cout<<"DISK_ERR, El disco no existe."<<endl;
     }
 }
 

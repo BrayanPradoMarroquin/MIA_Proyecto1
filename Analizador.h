@@ -35,7 +35,7 @@ void Analizador(string entrada){
                 cout<<"Reporte Generado"<<endl;
             }else if (line=="rmdisk")
             {
-                
+                Estado=4;
                 cout<<"Disco Removido"<<endl;
             }else if (line=="fdisk")
             {
@@ -58,7 +58,11 @@ void Analizador(string entrada){
             {
                 AnalizadorFdisk(line);
                 //cout<<"Hola"<<endl;
+            }else if (Estado==4)
+            {
+                Analizadormk(line);
             }
+            
             
 
                 
@@ -78,6 +82,7 @@ void Analizador(string entrada){
                 cout<<"Reporte Generado Exitosamente :D "<<endl;
             }else if (line2=="rmdisk")
             {
+                rmdisk();
                 cout<<"Disco Removido"<<endl;
             }else if (line2=="fdisk")
             {

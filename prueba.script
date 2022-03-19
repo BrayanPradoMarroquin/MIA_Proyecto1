@@ -1,3 +1,4 @@
-mkdisk -path=Disco1.dk -unit=K -Size=30 -fit=FF
-fdisk -path=Disco1.dk -unit=K -Size=4 -name="primera"
+mkdisk -path=Disco2.dk -unit=K -Size=30 -fit=FF
+fdisk -path=Disco2.dk -unit=K -Size=4 -name="primera"
+rmdisk -path=Disco2.dk
 rep
