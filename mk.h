@@ -143,6 +143,10 @@ void escribir(){
     nuevo.size = -1;
     nuevo.next = -1;
 
+    string parent_dir = MBR.path.substr(0, MBR.path.find_last_of("/\\"));
+    string mkfiles = "mkdir -p " + parent_dir;
+    system(mkfiles.c_str());
+
   // AQUÍ ABRIMOS COMO LECTURA Y ESCRITURA (rb+) EL ARCHIVO BINARIO
   FILE *disk_file = fopen(MBR.path.c_str(), "wb");
 
