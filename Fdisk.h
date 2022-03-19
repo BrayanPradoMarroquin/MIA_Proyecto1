@@ -12,7 +12,11 @@ using namespace std;
 void escribirfd();
 
 struct Partition {
-  int size = 0; 
+  int size;
+  char status;
+  char type;
+  int start;
+  char fit; 
   char name[25]; 
 };
 

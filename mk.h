@@ -11,8 +11,11 @@ using namespace std;
 void escribir();
 
 struct Partitionn {
-  int size = 0;
-  char unit; 
+  int size;
+  char status;
+  char type;
+  int start;
+  char fit; 
   char name[25]; 
 };
 
@@ -21,6 +24,7 @@ struct mk
     int mbr_tamano;
     char mbr_fecha_creacion[17];
     int mbr_dsk_signature;
+    char fit;
     Partitionn partitions[4];
 };
 
@@ -35,8 +39,20 @@ struct mkdisk
     string path;
 };
 
+struct EBR
+{
+    char name[16];
+    char status;
+    int start; 
+    char fit;
+    int size; 
+    int next;
+};
+
+
 mkdisk MBR;
 mk MBRT;
+EBR nuevo;
 
 /**
  * Formato de fecha
@@ -78,6 +94,8 @@ void Analizadormk(string dato){
         }else if (linea=="-path")
         {
             Estado = 3;
+        }else if(linea=="-fit"){
+            Estado = 4;
         }else if (Estado==1)
         {
             MBR.size = stoi(linea);
@@ -97,7 +115,11 @@ void Analizadormk(string dato){
         {
             MBR.path = linea;
             cout<<MBR.path<<endl;
+        }else if (Estado==4)
+        {
+            MBR.fit = linea;
         }
+        
     }
 }
 
@@ -106,35 +128,61 @@ void escribir(){
     int mbr_tamano = MBR.size*MBR.unit;
     string mbr_fecha_creacion = get_now(); // VER FUNCION ARRIBA
     int mbr_dsk_signature = rand() % 10; // NUMERO RANDOM
+    MBRT.fit = *MBR.fit.c_str();
 
-  // PARA ESCRIBIR STRINGS SE USA strcpy (SE DEBE ESCRIBIR EN EL ORDEN EN EL QUE SE DEFINIÓ EL STRUCT)
-  MBRT.mbr_tamano = mbr_tamano;
-  strcpy(MBRT.mbr_fecha_creacion, mbr_fecha_creacion.c_str());
-  MBRT.mbr_dsk_signature = mbr_dsk_signature;
+    // PARA ESCRIBIR STRINGS SE USA strcpy (SE DEBE ESCRIBIR EN EL ORDEN EN EL QUE SE DEFINIÓ EL STRUCT)
+    MBRT.mbr_tamano = mbr_tamano;
+    strcpy(MBRT.mbr_fecha_creacion, mbr_fecha_creacion.c_str());
+    MBRT.mbr_dsk_signature = mbr_dsk_signature;
+
+    string particion = "-";
+    strcpy(nuevo.name, particion.c_str());
+    nuevo.status = '0';
+    nuevo.start = -1;
+    nuevo.fit = 'W';
+    nuevo.size = -1;
+    nuevo.next = -1;
 
   // AQUÍ ABRIMOS COMO LECTURA Y ESCRITURA (rb+) EL ARCHIVO BINARIO
-  FILE *disk_file = fopen(MBR.path.c_str(), "rb+");
+  FILE *disk_file = fopen(MBR.path.c_str(), "wb");
 
-  // FSEEK NOS POSICIONA DENTRO DEL ARCHIVO
-  fseek(disk_file, 0, SEEK_SET); // EL SEGUNDO PARAMETRO ES LA POSICIÓN (0 EN ESTE CASO)
+    if(disk_file!=NULL){
 
-  // CREAR UN KB DE 0
-  char buffer[1024];
-  for (int i = 0; i < 1024; i++)
-    buffer[i] = '\0'; // AQUÍ CREAMOS UN KB DE BYTES COMO ARREGLO PARA RELLENAR
+        Partitionn nu;
 
-   // RELLENAR TODO EL ARCHIVO CON 0
-  for (int byte_index = 0; byte_index < mbr_tamano/1024; byte_index++) // VAMOS A LLENAR 1KB A LA VEZ (ASI ES MAS RÁPIDO)
-    fwrite(&buffer, 1024, 1, disk_file);
+        strcpy(nu.name, particion.c_str());
+        nu.status = '0';
+        nu.type = 'P';
+        nu.start = -1;
+        nuevo.size = -1;
+        nu.fit = 'w';
 
-   // FSEEK NOS POSICIONA DENTRO DEL ARCHIVO
-  fseek(disk_file, 0, SEEK_SET);
+        for (int i = 0; i < 4; i++)
+        {
+            MBRT.partitions[i] = nu;
+        }
 
-  // CON FWRITE GUARDAMOS EL STRUCT LUEGO DE POSICIONARNOS
-  fwrite(&MBRT, sizeof(MBRT), 1, disk_file); // EL TERCER PAREMETRO ES LA CANTIDAD DE STRUCTS A GUARDAR (EN ESTE CASO SOLO 1)
+        // FSEEK NOS POSICIONA DENTRO DEL ARCHIVO
+        fseek(disk_file, 0, SEEK_SET); // EL SEGUNDO PARAMETRO ES LA POSICIÓN (0 EN ESTE CASO)
 
-  // CERRAR STREAM (importante)
-  fclose(disk_file);
+         // CREAR UN KB DE 0
+        char buffer[1024];
+        for (int i = 0; i < 1024; i++)
+        buffer[i] = '\0'; // AQUÍ CREAMOS UN KB DE BYTES COMO ARREGLO PARA RELLENAR
+
+        // RELLENAR TODO EL ARCHIVO CON 0
+        for (int byte_index = 0; byte_index < mbr_tamano; byte_index++) // VAMOS A LLENAR 1KB A LA VEZ (ASI ES MAS RÁPIDO)
+            fwrite(&buffer, 1024, 1, disk_file);
+
+        // FSEEK NOS POSICIONA DENTRO DEL ARCHIVO
+        fseek(disk_file, 0, SEEK_SET);
+
+        // CON FWRITE GUARDAMOS EL STRUCT LUEGO DE POSICIONARNOS
+        fwrite(&MBRT, sizeof(MBRT), 1, disk_file); // EL TERCER PAREMETRO ES LA CANTIDAD DE STRUCTS A GUARDAR (EN ESTE CASO SOLO 1)
+
+        // CERRAR STREAM (importante)
+        fclose(disk_file);
+    }
 }
 
 void EjecutarMk(){
